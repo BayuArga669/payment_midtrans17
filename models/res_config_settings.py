@@ -12,3 +12,8 @@ class ResConfigSettings(models.TransientModel):
         string="Midtrans Client Key",
         config_parameter="payment_midtrans.client_key"
     )
+
+    midtrans_is_production = fields.Boolean(
+        string="Midtrans Production Mode",
+        config_parameter="payment_midtrans.production"
+    )

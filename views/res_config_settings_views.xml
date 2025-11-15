@@ -5,26 +5,20 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
 
         <field name="arch" type="xml">
-            <xpath expr="//div[contains(@class, 'settings')]" position="inside">
+            
+            <!-- Inject ke <sheet> -->
+            <xpath expr="//sheet" position="inside">
 
-                <div class="app_settings_block" data-string="Midtrans" string="Midtrans Settings">
-                    <h2>Midtrans Configuration</h2>
-
-                    <div class="row mt16 o_setting_box">
-                        <div class="col-12 col-lg-6">
-                            <label for="midtrans_server_key"/>
-                            <field name="midtrans_server_key"/>
-                        </div>
-
-                        <div class="col-12 col-lg-6">
-                            <label for="midtrans_client_key"/>
-                            <field name="midtrans_client_key"/>
-                        </div>
-                    </div>
-
-                </div>
+                <group string="Midtrans Payment">
+                    <group>
+                        <field name="midtrans_server_key"/>
+                        <field name="midtrans_client_key"/>
+                        <field name="midtrans_is_production"/>
+                    </group>
+                </group>
 
             </xpath>
+
         </field>
     </record>
 </odoo>
