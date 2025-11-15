@@ -173,4 +173,3 @@ class PaymentTransaction(models.Model):
             )
         else:
             _logger.warning(f"Unknown transaction status: {transaction_status}")
-

@@ -1,4 +1,3 @@
-
 from odoo import fields, models, api
 
 class PaymentProvider(models.Model):

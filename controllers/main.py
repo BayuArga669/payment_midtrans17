@@ -1,4 +1,3 @@
-
 import logging
 import json
 import hashlib
@@ -121,4 +120,3 @@ class MidtransController(http.Controller):
         except Exception as e:
             _logger.exception("Error verifying signature")
             return False
-

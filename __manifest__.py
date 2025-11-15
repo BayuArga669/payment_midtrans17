@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': 'Midtrans Payment Gateway',
     'version': '17.0.1.0.0',
@@ -26,14 +25,14 @@
         4. Pilih mode Test atau Production
         5. Daftarkan webhook URL di Midtrans dashboard
     """,
-    'author': 'Bayu Arga Pratama Rinaldi',
+    'author': 'Your Company',
     'website': 'https://www.yourcompany.com',
     'depends': ['payment', 'website_sale'],
     'data': [
         'security/ir.model.access.csv',
-        'data/payment_provider_data.xml',
-        'views/payment_provider_views.xml',
         'views/payment_midtrans_templates.xml',
+        'views/payment_provider_views.xml',
+        'data/payment_provider_data.xml',
     ],
     'assets': {
         'web.assets_frontend': [
