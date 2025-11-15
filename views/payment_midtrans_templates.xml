@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="payment_midtrans_snapscript" inherit_id="payment.checkout">
-        <xpath expr="//div[contains(@class,'o_payment_provider_icons')]" position="after">
-            <script type="text/javascript">
-                console.log("Midtrans Snap Loaded");
+    <template id="payment_midtrans_snapscript" inherit_id="payment.checkout_form">
+        <xpath expr="//div[contains(@class,'o_payment_form')]" position="after">
+            <script>
+                console.log("Midtrans Snap Loaded in Odoo 17");
             </script>
         </xpath>
     </template>
