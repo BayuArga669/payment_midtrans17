@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="payment_midtrans_snapscript" inherit_id="payment.form">
-        <xpath expr="//div[contains(@class, 'o_payment_form')]" position="inside">
+        <xpath expr="." position="inside">
             <script>
-                console.log("Midtrans Snap Loaded in Odoo 17");
+                console.log("Midtrans Loaded in Odoo 17 (ROOT INJECTION)");
             </script>
         </xpath>
     </template>
 </odoo>
+
 
