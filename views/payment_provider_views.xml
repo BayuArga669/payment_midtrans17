@@ -7,19 +7,19 @@
         <field name="inherit_id" ref="payment.payment_provider_form"/>
         <field name="arch" type="xml">
             <xpath expr="//group[@name='provider_credentials']" position="after">
-                <group attrs="{'invisible': [('code', '!=', 'midtrans')]}" 
+                <group invisible="code != 'midtrans'" 
                        string="Midtrans Credentials">
                     <group>
                         <field name="midtrans_merchant_id" 
                                placeholder="G123456789"
-                               attrs="{'required': [('code', '=', 'midtrans'), ('state', '!=', 'disabled')]}"/>
+                               required="code == 'midtrans' and state != 'disabled'"/>
                         <field name="midtrans_client_key" 
                                placeholder="SB-Mid-client-xxxxxxxxxxxxxxxx"
-                               attrs="{'required': [('code', '=', 'midtrans'), ('state', '!=', 'disabled')]}"/>
+                               required="code == 'midtrans' and state != 'disabled'"/>
                         <field name="midtrans_server_key" 
                                password="True"
                                placeholder="SB-Mid-server-xxxxxxxxxxxxxxxx"
-                               attrs="{'required': [('code', '=', 'midtrans'), ('state', '!=', 'disabled')]}"/>
+                               required="code == 'midtrans' and state != 'disabled'"/>
                     </group>
                     <group>
                         <div class="alert alert-info" role="alert">
