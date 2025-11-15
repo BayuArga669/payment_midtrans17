@@ -3,20 +3,27 @@
         <field name="name">midtrans.res.config.settings</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
-        
+
         <field name="arch" type="xml">
-            <xpath expr="//div[@id='settings']" position="inside">
-                <h2>Midtrans Settings</h2>
-                <div class="row mt16 o_setting_box">
-                    <div class="col-12 col-lg-6">
-                        <label for="midtrans_server_key"/>
-                        <field name="midtrans_server_key"/>
+            <xpath expr="//div[contains(@class, 'settings')]" position="inside">
+
+                <div class="app_settings_block" data-string="Midtrans" string="Midtrans Settings">
+                    <h2>Midtrans Configuration</h2>
+
+                    <div class="row mt16 o_setting_box">
+                        <div class="col-12 col-lg-6">
+                            <label for="midtrans_server_key"/>
+                            <field name="midtrans_server_key"/>
+                        </div>
+
+                        <div class="col-12 col-lg-6">
+                            <label for="midtrans_client_key"/>
+                            <field name="midtrans_client_key"/>
+                        </div>
                     </div>
-                    <div class="col-12 col-lg-6">
-                        <label for="midtrans_client_key"/>
-                        <field name="midtrans_client_key"/>
-                    </div>
+
                 </div>
+
             </xpath>
         </field>
     </record>
