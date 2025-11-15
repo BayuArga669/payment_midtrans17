@@ -6,33 +6,44 @@
         <field name="model">payment.provider</field>
         <field name="inherit_id" ref="payment.payment_provider_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//group[@name='provider_credentials']" position="after">
-                <group invisible="code != 'midtrans'" 
-                       string="Midtrans Credentials">
+            <!-- Add Midtrans Credentials Tab -->
+            <xpath expr="//page[@name='configuration']" position="after">
+                <page string="Midtrans Credentials" 
+                      invisible="code != 'midtrans'"
+                      name="midtrans_credentials">
                     <group>
-                        <field name="midtrans_merchant_id" 
-                               placeholder="G123456789"
-                               required="code == 'midtrans' and state != 'disabled'"/>
-                        <field name="midtrans_client_key" 
-                               placeholder="SB-Mid-client-xxxxxxxxxxxxxxxx"
-                               required="code == 'midtrans' and state != 'disabled'"/>
-                        <field name="midtrans_server_key" 
-                               password="True"
-                               placeholder="SB-Mid-server-xxxxxxxxxxxxxxxx"
-                               required="code == 'midtrans' and state != 'disabled'"/>
+                        <group string="API Credentials">
+                            <field name="midtrans_merchant_id" 
+                                   placeholder="G123456789"
+                                   required="code == 'midtrans' and state != 'disabled'"/>
+                            <field name="midtrans_client_key" 
+                                   placeholder="SB-Mid-client-xxxxxxxxxxxxxxxx"
+                                   required="code == 'midtrans' and state != 'disabled'"/>
+                            <field name="midtrans_server_key" 
+                                   password="True"
+                                   placeholder="SB-Mid-server-xxxxxxxxxxxxxxxx"
+                                   required="code == 'midtrans' and state != 'disabled'"/>
+                        </group>
+                        <group string="Information">
+                            <div class="alert alert-info" role="alert">
+                                <h4>Setup Instructions:</h4>
+                                <ol>
+                                    <li>Login ke <a href="https://dashboard.midtrans.com" target="_blank">Midtrans Dashboard</a></li>
+                                    <li>Pilih Environment: <strong>Sandbox</strong> (testing) atau <strong>Production</strong></li>
+                                    <li>Go to <strong>Settings → Access Keys</strong></li>
+                                    <li>Copy <strong>Merchant ID</strong>, <strong>Client Key</strong>, dan <strong>Server Key</strong></li>
+                                    <li>Paste di form ini</li>
+                                    <li>Untuk testing gunakan credentials Sandbox (awalan SB-)</li>
+                                </ol>
+                                <h4>Webhook Configuration:</h4>
+                                <p>Daftarkan URL ini di Midtrans Dashboard → Settings → Notification:</p>
+                                <code style="background: #f5f5f5; padding: 5px; display: block; margin: 5px 0;">
+                                    https://yourdomain.com/payment/midtrans/notification
+                                </code>
+                            </div>
+                        </group>
                     </group>
-                    <group>
-                        <div class="alert alert-info" role="alert">
-                            <strong>Informasi Konfigurasi:</strong>
-                            <ul>
-                                <li>Dapatkan credentials dari <a href="https://dashboard.midtrans.com" target="_blank">Midtrans Dashboard</a></li>
-                                <li>Untuk testing, gunakan Sandbox credentials (awalan SB-)</li>
-                                <li>Untuk production, gunakan Production credentials</li>
-                                <li>Daftarkan Notification URL: <code>/payment/midtrans/notification</code></li>
-                            </ul>
-                        </div>
-                    </group>
-                </group>
+                </page>
             </xpath>
         </field>
     </record>
