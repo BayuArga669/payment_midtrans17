@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="payment_midtrans_snapscript" inherit_id="payment.form">
+        <xpath expr="." position="inside">
+            <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+                    data-client-key="{{ o.env['ir.config_parameter'].sudo().get_param('payment_midtrans.client_key') }}">
+            </script>
+
+            <script>
+                console.log("Midtrans Snap Loaded!");
+
+                function payWithMidtrans(token) {
+                    snap.pay(token, {
+                        onSuccess: function(result){ console.log(result); },
+                        onPending: function(result){ console.log(result); },
+                        onError: function(result){ console.log(result); },
+                        onClose: function(){ console.log("Customer closed popup"); }
+                    });
+                }
+            </script>
+        </xpath>
+    </template>
+</odoo>
