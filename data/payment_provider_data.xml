@@ -7,10 +7,5 @@
         <field name="state">disabled</field>
         <field name="is_published">False</field>
         <field name="sequence">50</field>
-        <field name="display_as">Midtrans Payment Gateway</field>
-        <field name="support_tokenization">False</field>
-        <field name="support_manual_capture">False</field>
-        <field name="support_refund">False</field>
-        <field name="redirect_form_view_id" ref="payment_midtrans17.midtrans_form"/>
     </record>
 </odoo>
