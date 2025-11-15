@@ -1,24 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="midtrans_config_settings_view" model="ir.ui.view">
-        <field name="name">midtrans.config.settings.view</field>
+    <record id="view_midtrans_settings" model="ir.ui.view">
+        <field name="name">midtrans.res.config.settings</field>
         <field name="model">res.config.settings</field>
-        <field name="inherit_id" ref="base.view_res_config_settings"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        
         <field name="arch" type="xml">
             <xpath expr="//div[@id='settings']" position="inside">
-                <h2>Midtrans Configuration</h2>
-                <div class="row mt16">
-                    <div class="col-6">
+                <h2>Midtrans Settings</h2>
+                <div class="row mt16 o_setting_box">
+                    <div class="col-12 col-lg-6">
                         <label for="midtrans_server_key"/>
                         <field name="midtrans_server_key"/>
                     </div>
-                    <div class="col-6">
+                    <div class="col-12 col-lg-6">
                         <label for="midtrans_client_key"/>
                         <field name="midtrans_client_key"/>
-                    </div>
-                    <div class="col-6 mt16">
-                        <label for="midtrans_merchant_id"/>
-                        <field name="midtrans_merchant_id"/>
                     </div>
                 </div>
             </xpath>

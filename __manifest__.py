@@ -10,6 +10,7 @@
     ],
     'data': [
         'views/payment_midtrans_templates.xml',
+        'views/res_config_settings_views.xml',
     ],
     'assets': {
         'web.assets_frontend': [
