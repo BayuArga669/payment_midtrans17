@@ -45,3 +45,13 @@ class PaymentProvider(models.Model):
     def _midtrans_get_supported_currencies(self):
         """Return supported currencies."""
         return ['IDR']
+    
+    def action_publish_midtrans(self):
+        """Action to publish Midtrans payment provider."""
+        self.ensure_one()
+        if self.code == 'midtrans':
+            self.write({
+                'is_published': True,
+                'state': 'test'
+            })
+        return True

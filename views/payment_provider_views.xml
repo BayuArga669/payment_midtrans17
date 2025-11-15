@@ -43,6 +43,13 @@
                             </div>
                         </group>
                     </group>
+                    <group>
+                        <button name="action_publish_midtrans" 
+                                string="Publish Midtrans" 
+                                type="object" 
+                                class="btn-primary"
+                                invisible="is_published"/>
+                    </group>
                 </page>
             </xpath>
         </field>
