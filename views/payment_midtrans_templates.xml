@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="payment_midtrans_snapscript" inherit_id="website_sale.checkout">
-        <xpath expr="//div[@id='payment_method']" position="inside">
-            <script src="https://app.midtrans.com/snap/snap.js"></script>
-            <script>
-                console.log("Midtrans Snap.js loaded on checkout page.");
+    <template id="payment_midtrans_snapscript" inherit_id="payment.checkout">
+        <xpath expr="//div[contains(@class,'o_payment_provider_icons')]" position="after">
+            <script type="text/javascript">
+                console.log("Midtrans Snap Loaded");
             </script>
         </xpath>
     </template>
