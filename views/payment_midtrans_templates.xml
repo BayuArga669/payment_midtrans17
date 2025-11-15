@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tambah tombol Midtrans di halaman pembayaran -->
+    <template id="payment_midtrans_button" inherit_id="payment.payment_confirmation">
+        <xpath expr="//div[@id='o_payment_form_payments']" position="inside">
+            <script src="https://app.midtrans.com/snap/snap.js"></script>
+            <script>
+                console.log("Midtrans Snap.js loaded.");
+            </script>
+        </xpath>
+    </template>
+</odoo>
