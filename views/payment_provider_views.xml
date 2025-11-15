@@ -1,44 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Inherit payment provider form to add Midtrans credentials -->
-    <record id="payment_provider_form_inherit_midtrans" model="ir.ui.view">
-        <field name="name">payment.provider.form.inherit.midtrans</field>
+    <!-- Extend Payment Provider Form -->
+    <record id="payment_provider_form_midtrans" model="ir.ui.view">
+        <field name="name">payment.provider.form.midtrans</field>
         <field name="model">payment.provider</field>
         <field name="inherit_id" ref="payment.payment_provider_form"/>
         <field name="arch" type="xml">
-            <!-- Add Midtrans credentials section -->
             <xpath expr="//group[@name='provider_credentials']" position="after">
-                <group name="midtrans_credentials" invisible="code != 'midtrans'" string="Midtrans Credentials">
-                    <group>
-                        <field name="midtrans_client_key" password="True" 
-                               placeholder="e.g. SB-Mid-client-xxxxxxxxxxxxxx"/>
-                        <field name="midtrans_server_key" password="True" 
-                               placeholder="e.g. SB-Mid-server-xxxxxxxxxxxxxx"/>
-                    </group>
+                <group attrs="{'invisible': [('code', '!=', 'midtrans')]}" 
+                       string="Midtrans Credentials">
                     <group>
                         <field name="midtrans_merchant_id" 
-                               placeholder="Optional: M123456"/>
+                               placeholder="G123456789"
+                               attrs="{'required': [('code', '=', 'midtrans'), ('state', '!=', 'disabled')]}"/>
+                        <field name="midtrans_client_key" 
+                               placeholder="SB-Mid-client-xxxxxxxxxxxxxxxx"
+                               attrs="{'required': [('code', '=', 'midtrans'), ('state', '!=', 'disabled')]}"/>
+                        <field name="midtrans_server_key" 
+                               password="True"
+                               placeholder="SB-Mid-server-xxxxxxxxxxxxxxxx"
+                               attrs="{'required': [('code', '=', 'midtrans'), ('state', '!=', 'disabled')]}"/>
+                    </group>
+                    <group>
+                        <div class="alert alert-info" role="alert">
+                            <strong>Informasi Konfigurasi:</strong>
+                            <ul>
+                                <li>Dapatkan credentials dari <a href="https://dashboard.midtrans.com" target="_blank">Midtrans Dashboard</a></li>
+                                <li>Untuk testing, gunakan Sandbox credentials (awalan SB-)</li>
+                                <li>Untuk production, gunakan Production credentials</li>
+                                <li>Daftarkan Notification URL: <code>/payment/midtrans/notification</code></li>
+                            </ul>
+                        </div>
                     </group>
                 </group>
-            </xpath>
-            
-            <!-- Add help text for Midtrans -->
-            <xpath expr="//group[@name='provider_credentials']" position="after">
-                <div invisible="code != 'midtrans'" class="alert alert-info" role="alert">
-                    <h4>How to Get Midtrans Credentials:</h4>
-                    <ol>
-                        <li>Sign up at <a href="https://dashboard.midtrans.com/register" target="_blank">Midtrans Dashboard</a></li>
-                        <li>Verify your account and complete merchant profile</li>
-                        <li>Go to <strong>Settings → Access Keys</strong></li>
-                        <li>Copy your <strong>Client Key</strong> and <strong>Server Key</strong></li>
-                        <li>For testing, use <strong>Sandbox</strong> keys (starts with SB-)</li>
-                        <li>For production, switch to <strong>Production</strong> mode and use production keys</li>
-                    </ol>
-                    <p class="mb-0">
-                        <strong>Note:</strong> Make sure to configure webhook URL in Midtrans Dashboard:<br/>
-                        <code id="webhook_url">https://your-domain.com/payment/midtrans/webhook</code>
-                    </p>
-                </div>
             </xpath>
         </field>
     </record>

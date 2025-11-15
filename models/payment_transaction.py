@@ -1,141 +1,176 @@
-# ============================================
-# FILE: models/payment_transaction.py
-# ============================================
 import logging
-import pprint
+import requests
+import base64
+import json
 from werkzeug import urls
 
-from odoo import _, api, fields, models
+from odoo import _, fields, models
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
+
 
 class PaymentTransaction(models.Model):
     _inherit = 'payment.transaction'
 
     midtrans_order_id = fields.Char(
         string='Midtrans Order ID',
-        readonly=True,
-        help='Order ID from Midtrans'
+        readonly=True
     )
-    
     midtrans_snap_token = fields.Char(
         string='Snap Token',
-        readonly=True,
-        help='Snap token for payment popup'
+        readonly=True
+    )
+    midtrans_transaction_id = fields.Char(
+        string='Transaction ID',
+        readonly=True
     )
 
     def _get_specific_rendering_values(self, processing_values):
-        """Override to add Midtrans-specific rendering values."""
+        """Override untuk menambahkan values spesifik Midtrans."""
         res = super()._get_specific_rendering_values(processing_values)
         if self.provider_code != 'midtrans':
             return res
 
-        # Generate order ID
-        order_id = f"ORDER-{self.reference}-{fields.Datetime.now().timestamp()}"
+        # Siapkan payload untuk Midtrans Snap
+        payload = self._midtrans_prepare_payment_request_payload()
         
-        # Prepare transaction details
-        payload = {
+        # Request Snap Token dari Midtrans
+        snap_token = self._midtrans_get_snap_token(payload)
+        
+        if snap_token:
+            self.midtrans_snap_token = snap_token
+            self.midtrans_order_id = payload['transaction_details']['order_id']
+            
+            urls = self.provider_id._get_midtrans_urls()
+            res.update({
+                'snap_token': snap_token,
+                'client_key': self.provider_id.midtrans_client_key,
+                'snap_js_url': urls['snap_js'],
+                'api_url': self.provider_id.get_base_url(),
+            })
+        
+        return res
+
+    def _midtrans_prepare_payment_request_payload(self):
+        """Siapkan payload untuk request Snap Token."""
+        self.ensure_one()
+        
+        base_url = self.provider_id.get_base_url()
+        
+        return {
             'transaction_details': {
-                'order_id': order_id,
-                'gross_amount': int(self.amount),
+                'order_id': f"{self.reference}",
+                'gross_amount': int(self.amount)
             },
             'customer_details': {
-                'first_name': self.partner_id.name or 'Customer',
-                'email': self.partner_id.email or '',
-                'phone': self.partner_id.phone or self.partner_id.mobile or '',
+                'first_name': self.partner_name or self.partner_id.name or 'Guest',
+                'email': self.partner_email or self.partner_id.email or '',
+                'phone': self.partner_phone or self.partner_id.phone or '',
             },
-            'item_details': self._midtrans_prepare_item_details(),
             'callbacks': {
-                'finish': urls.url_join(self.get_base_url(), '/payment/midtrans/return'),
+                'finish': urls.url_join(base_url, '/payment/midtrans/return'),
+                'error': urls.url_join(base_url, '/payment/midtrans/return'),
+                'pending': urls.url_join(base_url, '/payment/midtrans/return')
             }
         }
 
-        # Call Midtrans API to get snap token
+    def _midtrans_get_snap_token(self, payload):
+        """Request Snap Token dari Midtrans API."""
+        self.ensure_one()
+        
+        urls = self.provider_id._get_midtrans_urls()
+        server_key = self.provider_id.midtrans_server_key
+        
+        # Encode server key untuk Basic Auth
+        auth_string = base64.b64encode(f"{server_key}:".encode()).decode()
+        
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': f'Basic {auth_string}'
+        }
+        
         try:
-            response = self.provider_id._midtrans_make_request('transactions', payload)
-            snap_token = response.get('token')
-            
-            self.write({
-                'midtrans_order_id': order_id,
-                'midtrans_snap_token': snap_token,
-            })
-            
-            rendering_values = {
-                'snap_token': snap_token,
-                'client_key': self.provider_id.midtrans_client_key,
-                'api_url': self.provider_id._midtrans_get_api_url().replace('/snap/v1', ''),
-            }
-            
-            return rendering_values
-            
-        except Exception as e:
-            _logger.error('Error creating Midtrans transaction: %s', str(e))
-            raise ValidationError(_('Unable to create payment transaction. Please try again.'))
+            _logger.info(f"Requesting Snap Token for order: {payload['transaction_details']['order_id']}")
+            response = requests.post(
+                urls['snap_url'],
+                json=payload,
+                headers=headers,
+                timeout=10
+            )
+            response.raise_for_status()
+            result = response.json()
+            _logger.info(f"Snap Token received successfully")
+            return result.get('token')
+        except requests.exceptions.RequestException as e:
+            _logger.error(f"Error getting Midtrans Snap token: {str(e)}")
+            if hasattr(e, 'response') and e.response is not None:
+                _logger.error(f"Response content: {e.response.text}")
+            raise ValidationError(
+                _("Tidak dapat terhubung ke Midtrans. Silakan periksa konfigurasi atau coba lagi nanti.")
+            )
 
-    def _midtrans_prepare_item_details(self):
-        """Prepare item details for Midtrans."""
-        items = []
-        
-        # If transaction is linked to a sale order
-        if self.sale_order_ids:
-            for order in self.sale_order_ids:
-                for line in order.order_line:
-                    items.append({
-                        'id': str(line.product_id.id),
-                        'name': line.product_id.name,
-                        'price': int(line.price_unit),
-                        'quantity': int(line.product_uom_qty),
-                    })
-        else:
-            # Generic item
-            items.append({
-                'id': 'PAYMENT',
-                'name': self.reference or 'Payment',
-                'price': int(self.amount),
-                'quantity': 1,
-            })
-        
-        return items
-
-    @api.model
     def _get_tx_from_notification_data(self, provider_code, notification_data):
-        """Override to find transaction from Midtrans notification."""
+        """Override untuk menangani notifikasi dari Midtrans."""
         tx = super()._get_tx_from_notification_data(provider_code, notification_data)
         if provider_code != 'midtrans' or len(tx) == 1:
             return tx
 
         order_id = notification_data.get('order_id')
         if not order_id:
-            raise ValidationError('Midtrans: Missing order_id in notification data')
+            raise ValidationError(_("Midtrans: Order ID tidak ditemukan dalam notifikasi"))
 
-        tx = self.search([('midtrans_order_id', '=', order_id), ('provider_code', '=', 'midtrans')])
+        tx = self.search([
+            ('reference', '=', order_id),
+            ('provider_code', '=', 'midtrans')
+        ], limit=1)
+        
         if not tx:
-            raise ValidationError(f'Midtrans: No transaction found for order_id {order_id}')
-
+            raise ValidationError(
+                _("Midtrans: Transaksi tidak ditemukan untuk order_id %s") % order_id
+            )
         return tx
 
     def _process_notification_data(self, notification_data):
-        """Process Midtrans notification data."""
+        """Proses data notifikasi dari Midtrans."""
         super()._process_notification_data(notification_data)
         if self.provider_code != 'midtrans':
             return
 
-        _logger.info('Processing Midtrans notification for tx %s:\n%s', self.reference, pprint.pformat(notification_data))
+        # Update transaction ID
+        if notification_data.get('transaction_id'):
+            self.midtrans_transaction_id = notification_data['transaction_id']
 
         transaction_status = notification_data.get('transaction_status')
         fraud_status = notification_data.get('fraud_status', 'accept')
+
+        _logger.info(
+            f"Processing Midtrans notification for {self.reference}: "
+            f"status={transaction_status}, fraud={fraud_status}"
+        )
 
         if transaction_status == 'capture':
             if fraud_status == 'accept':
                 self._set_done()
             elif fraud_status == 'challenge':
-                self._set_pending()
+                self._set_pending(
+                    state_message=_("Pembayaran sedang dalam review fraud detection")
+                )
+            else:
+                self._set_canceled(
+                    state_message=_("Pembayaran ditolak oleh fraud detection")
+                )
         elif transaction_status == 'settlement':
             self._set_done()
-        elif transaction_status in ['deny', 'cancel', 'expire']:
-            self._set_canceled()
+        elif transaction_status in ['cancel', 'deny', 'expire']:
+            self._set_canceled(
+                state_message=_("Pembayaran %s") % transaction_status
+            )
         elif transaction_status == 'pending':
-            self._set_pending()
+            self._set_pending(
+                state_message=_("Menunggu pembayaran")
+            )
         else:
-            _logger.warning('Unhandled Midtrans transaction status: %s', transaction_status)
+            _logger.warning(f"Unknown transaction status: {transaction_status}")
+

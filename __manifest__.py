@@ -1,51 +1,39 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Payment Provider: Midtrans',
+    'name': 'Midtrans Payment Gateway',
     'version': '17.0.1.0.0',
-    'category': 'Accounting/Payment Providers',
-    'summary': 'Payment Provider: Midtrans Payment Gateway',
+    'category': 'Accounting/Payment Acquirers',
+    'summary': 'Integrasi Midtrans Payment Gateway untuk Odoo E-commerce',
     'description': """
-Midtrans Payment Gateway Integration for Odoo 17
-=================================================
-This module integrates Midtrans payment gateway with Odoo e-commerce.
-
-Features:
----------
-* Credit Card payments (Visa, MasterCard, JCB, Amex)
-* Bank Transfer (BCA, Mandiri, BNI, BRI, Permata)
-* E-Wallet (GoPay, OVO, Dana, ShopeePay, LinkAja)
-* QRIS payments
-* Installment payments
-* Real-time payment status updates via webhook
-* Sandbox and Production modes
-* Automatic transaction reconciliation
-* Secure payment with Snap popup
-
-Configuration:
---------------
-1. Get your credentials from Midtrans Dashboard (https://dashboard.midtrans.com)
-2. Go to Settings > Payment Providers > Midtrans
-3. Enter your Client Key and Server Key
-4. Choose Test or Production mode
-5. Publish the provider
-
-Technical:
-----------
-* Uses Midtrans Snap API
-* Webhook support for payment notifications
-* SHA512 signature verification
-* Support for multiple payment channels
+        Midtrans Payment Gateway Integration
+        =====================================
+        
+        Modul ini mengintegrasikan Midtrans sebagai payment gateway untuk Odoo E-commerce.
+        
+        Fitur:
+        ------
+        * Pembayaran dengan Snap Midtrans
+        * Dukungan berbagai metode pembayaran (Credit Card, Bank Transfer, E-Wallet, dll)
+        * Notifikasi otomatis untuk status pembayaran
+        * Sandbox dan Production mode
+        * Verifikasi signature untuk keamanan
+        
+        Konfigurasi:
+        -----------
+        1. Dapatkan credentials dari dashboard Midtrans
+        2. Aktifkan payment provider di Odoo
+        3. Masukkan Merchant ID, Client Key, dan Server Key
+        4. Pilih mode Test atau Production
+        5. Daftarkan webhook URL di Midtrans dashboard
     """,
-    'author': 'Bayu',
-    'website': 'https://www.midtrans.com',
-    'depends': [
-        'payment',
-        'website_sale',
-    ],
+    'author': 'Bayu Arga Pratama Rinaldi',
+    'website': 'https://www.yourcompany.com',
+    'depends': ['payment', 'website_sale'],
     'data': [
+        'security/ir.model.access.csv',
+        'data/payment_provider_data.xml',
         'views/payment_provider_views.xml',
         'views/payment_midtrans_templates.xml',
-        'data/payment_provider_data.xml',
     ],
     'assets': {
         'web.assets_frontend': [

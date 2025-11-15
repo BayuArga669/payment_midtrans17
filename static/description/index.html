@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Midtrans Payment Gateway</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #00B4CC;
+            border-bottom: 2px solid #00B4CC;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 30px;
+        }
+        .feature {
+            background: #f4f4f4;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #00B4CC;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Midtrans Payment Gateway untuk Odoo</h1>
+    
+    <p>
+        Integrasi lengkap Midtrans Payment Gateway dengan Odoo E-commerce. 
+        Terima pembayaran dari pelanggan dengan mudah menggunakan berbagai metode pembayaran.
+    </p>
+
+    <h2>✨ Fitur Utama</h2>
+    
+    <div class="feature">
+        <strong>Snap Payment Interface</strong><br>
+        Interface pembayaran modern dan user-friendly dari Midtrans
+    </div>
+    
+    <div class="feature">
+        <strong>Multi Payment Methods</strong><br>
+        Credit Card, Bank Transfer, E-Wallet (GoPay, OVO, Dana, ShopeePay), dan lainnya
+    </div>
+    
+    <div class="feature">
+        <strong>Real-time Notification</strong><br>
+        Update status pembayaran secara otomatis via webhook
+    </div>
+    
+    <div class="feature">
+        <strong>Sandbox & Production</strong><br>
+        Mode testing untuk development dan mode live untuk production
+    </div>
+
+    <h2>📋 Cara Instalasi</h2>
+    <ol>
+        <li>Copy folder <code>payment_midtrans</code> ke direktori addons Odoo</li>
+        <li>Restart Odoo server</li>
+        <li>Update Apps List</li>
+        <li>Cari dan install module "Midtrans Payment Gateway"</li>
+    </ol>
+
+    <h2>⚙️ Konfigurasi</h2>
+    <ol>
+        <li>Buka <strong>Settings → Payment Providers</strong></li>
+        <li>Pilih <strong>Midtrans</strong></li>
+        <li>Masukkan credentials dari Midtrans Dashboard:
+            <ul>
+                <li>Merchant ID</li>
+                <li>Client Key</li>
+                <li>Server Key</li>
+            </ul>
+        </li>
+        <li>Pilih state: <code>Test Mode</code> atau <code>Enabled</code></li>
+        <li>Save dan Publish</li>
+    </ol>
+
+    <h2>🔗 Webhook Configuration</h2>
+    <p>Daftarkan URL berikut di Midtrans Dashboard:</p>
+    <code>https://yourdomain.com/payment/midtrans/notification</code>
+
+    <h2>📞 Support</h2>
+    <p>
+        Untuk pertanyaan atau dukungan, silakan hubungi:<br>
+        Email: <a href="mailto:support@yourcompany.com">support@yourcompany.com</a>
+    </p>
+</body>
+</html>
